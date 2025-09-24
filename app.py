@@ -147,6 +147,29 @@ def get_rescuers():
     except Exception as e:
         return jsonify({'error': str(e)}), 500
         
+        # --- YEH NAYA FUNCTION SIRF EK BAAR DATA DAALNE KE LIYE HAI ---
+@app.route('/api/seed-database')
+def seed_database():
+    try:
+        # Check if snakes table is empty
+        if db.session.execute(db.select(Snake)).scalars().first() is None:
+            print("Seeding snakes...")
+            snake1 = Snake(common_name='Indian Cobra', scientific_name='Naja naja', is_venomous=True, description='One of the most venomous snakes in India.', image_url='images/naja_naja.jpg')
+            snake2 = Snake(common_name="Russell's Viper", scientific_name='Daboia russelii', is_venomous=True, description='Another highly venomous snake.', image_url='images/daboia_russelii.jpg')
+            db.session.add_all([snake1, snake2])
+        
+        # Check if rescuers table is empty
+        if db.session.execute(db.select(Rescuer)).scalars().first() is None:
+            print("Seeding rescuers...")
+            rescuer1 = Rescuer(name='Chittorgarh Wildlife Rescue', city='Chittorgarh', phone_number='+91-9876543210', is_hospital=False)
+            rescuer2 = Rescuer(name='Govt. General Hospital, Chittorgarh', city='Chittorgarh', phone_number='01472-24XXXX', is_hospital=True)
+            db.session.add_all([rescuer1, rescuer2])
+
+        db.session.commit()
+        return "Database has been seeded successfully!"
+    except Exception as e:
+        db.session.rollback()
+        return f"An error occurred: {str(e)}", 500
 # 6. Run the application
 if __name__ == '__main__':
     app.run(host='0.0.0.0', port=5000, debug=True)
