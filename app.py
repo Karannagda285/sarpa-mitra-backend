@@ -13,13 +13,7 @@ app = Flask(__name__)
 CORS(app)
 
 # 2. Database Configuration
-raw_password = 'Karan@123' # <-- YAHAN APNA PASSWORD DAALO
-DB_PASS = urllib.parse.quote_plus(raw_password)
-DB_USER = 'postgres'
-DB_HOST = 'localhost'
-DB_PORT = '5432'
-DB_NAME = 'sarpamitra_db'
-app.config['SQLALCHEMY_DATABASE_URI'] = f'postgresql://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}'
+app.config['SQLALCHEMY_DATABASE_URI'] = os.environ.get('DATABASE_URL')
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 db = SQLAlchemy(app)
 
